@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+apply from:this.file('common.gradle')
 buildscript {
     
     repositories {
@@ -44,20 +44,20 @@ project('app') {
         }
 }
 
-project('mylibrary') {
-    apply plugin: 'com.android.library'
-    dependencies {
-
-    }
-
-    android {
-
-    }
-
-    repositories {
-
-    }
-}
+//project('mylibrary') {
+//    apply plugin: 'com.android.library'
+//    dependencies {
+//
+//    }
+//
+//    android {
+//
+//    }
+//
+//    repositories {
+//
+//    }
+//}
 
 //配置当前节点工程和其subproject的所有project
 allprojects {
