@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<releases>
+    <release>
+        <versionName>100</versionName>
+        <versionCode>1.0.0</versionCode>
+        <versionInfo>"测试看看行不行啊0"</versionInfo>
+    </release>
+    <release>
+        <versionName>101</versionName>
+        <versionCode>1.0.0</versionCode>
+        <versionInfo>"测试看看行不行啊1"</versionInfo>
+    </release>
+    <release>
+        <versionName>102</versionName>
+        <versionCode>1.0.0</versionCode>
+        <versionInfo>"测试看看行不行啊2"</versionInfo>
+    </release>
+</releases>

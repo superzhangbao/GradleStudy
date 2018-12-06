@@ -28,7 +28,7 @@ dependencies {
     androidTestImplementation rootProject.ext.dependence.libSupportTestEspresso
 
     implementation(rootProject.ext.dependence.libSupportV7) {
-        exclude module:'support-v4'//排除依赖
+        exclude module: 'support-v4'//排除依赖
         transitive false//禁止传递依赖
     }
 }
@@ -59,21 +59,109 @@ dependencies {
 //        }
 //}
 
+//task(name: 'apkcopy') {
+//    doLast {
+//        //gradle的执行阶段去执行
+//        def sourcePath = this.buildDir.path + '/outputs/apk'
+//        def desationPath = 'E:/test/'
+//        def command = "mv -f ${sourcePath} ${desationPath}"
+//        exec {
+//            try {
+//                executable 'bash'
+//                args '-c',command
+//                println 'the command is execute success.'
+//            }catch (GradleException e) {
+//                println 'the command is execute failed.'
+//            }
+//        }
+//    }
+//}
 
-task(name: 'apkcopy') {
+/*****************************task的创建*************************************/
+//1.直接通过task函数去创建
+//task helloTask(group:'zb',description:'task study') {
+//    println 'I am helloTask'
+//    doFirst {
+//        println 'the task group is:'+group
+//    }
+//
+//    doFirst {
+//
+//    }
+//}
+//helloTask.doFirst {
+//    println 'the task description is:'+description
+//}
+//
+////2.通过TaskContainer去创建Task
+//this.tasks.create(name:'helloTask2',group: 'zb') {
+//    setDescription('task study')
+//    println 'I am helloTask2'
+//}
+
+//计算build执行时长
+def startBuildTime, endBuildTime
+
+this.afterEvaluate { Project project ->
+    //保证要找的task已经配置完毕
+    def preBuildTask = project.tasks.getByName('preBuild')
+    preBuildTask.doFirst {
+        startBuildTime = System.currentTimeMillis()
+        println 'the start time is:' + startBuildTime
+    }
+
+    def buildTask = project.tasks.getByName('build')
+    buildTask.doLast {
+        endBuildTime = System.currentTimeMillis()
+        println "the build time is: ${endBuildTime - startBuildTime}"
+    }
+}
+
+task taskA(group: 'mytask', description: 'mytaskA') {
     doLast {
-        //gradle的执行阶段去执行
-        def sourcePath = this.buildDir.path + '/outputs/apk'
-        def desationPath = 'E:/test/'
-        def command = "mv -f ${sourcePath} ${desationPath}"
-        exec {
-            try {
-                executable 'bash'
-                args '-c',command
-                println 'the command is execute success.'
-            }catch (GradleException e) {
-                println 'the command is execute failed.'
+        println 'taskA'
+    }
+}
+
+task taskB(group: 'mytask', description: 'mytaskB') {
+    doLast {
+        println 'taskB'
+    }
+}
+
+task taskC(group: 'mytask', description: 'mytaskC', dependsOn: [taskB, taskA]) {
+    doLast {
+        println 'taskC'
+    }
+}
+
+task handleReleaseFile {
+    def srcFile = file('releases.xml')
+    def destDir = new File(this.buildDir.path + '/generated/release/')
+    doLast {
+        println '开始解析对应的xml文件...'
+        destDir.mkdir()
+        def releases = new XmlParser().parse(srcFile)
+        releases.release.each { releaseNode ->
+            //解析每个release结点的内容
+            def name = releaseNode.versionName.text()
+            def versionCode = releaseNode.versionCode.text()
+            def versionInfo = releaseNode.versionInfo.text()
+            //创建文件并写入节点数据
+            def destFile = new File(destDir, "release-${name}.text")
+            destFile.withWriter('UTF-8') { writer ->
+                writer.write("${name} -> ${versionCode} -> ${versionInfo}")
             }
         }
+    }
+}
+
+task handleReleaseFileTest(dependsOn: handleReleaseFile) {
+    def dir = fileTree(this.buildDir.path + '/generated/release/')
+    doLast {
+        dir.each {
+            println 'the file name is:' + it
+        }
+        println '输出完成'
     }
 }

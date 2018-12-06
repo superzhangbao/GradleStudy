@@ -3,4 +3,4 @@ include ':app'
 if (hasProperty('isLoadMyLibrary') ? isLoadMyLibrary.toBoolean() : false) {
     include ':mylibrary'
 }
-println '初始化阶段开始----------------------------------------------------'
+//println '初始化阶段开始----------------------------------------------------'
